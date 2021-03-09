@@ -1,2 +1,3 @@
 # MovieRatingDS
-A Movie rating using mongodb database with python
+A Movie rating distribution system using mongodb database with python
+
