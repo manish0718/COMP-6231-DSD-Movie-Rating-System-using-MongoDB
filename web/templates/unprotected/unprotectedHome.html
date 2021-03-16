@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}{{ super() }} - Home{% endblock %}
+
+{% block content %}
+<div class="jumbotron bg-dark text-white ">
+    <div class="container ">
+        <img src="../../static/image/Home.jpg" height="200" width="500" alt="welcome">
+        <h1 class="display-3 ">Welcome to Movie Rating System </h1>
+        <p> This is a Movie rating website which contains Movie rating dataset.</p>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="myheadercolor">General Description</h2>
+            <dl>
+                <dt><strong>What it is about</strong></dt>
+                <dd> This is a Movie rating system which user can get review from wanted movie.</dd>
+                <dt><strong>purpose</strong></dt>
+                <dd> added machine learning to recommand user list of movie
+                </dd>
+            </dl>
+            <hr>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+<footer class="blog-footer">
+    <hr>
+    <div id="footer">
+        <div class="container text-center">
+            <p class="text-muted credit" style="color:#fff">
+                <em>Copyright &copy; 2019 DeJian Wang</em></br>
+                <a href="#top">Back to top</a>
+            </p>
+        </div>
+    </div>
+</footer>
