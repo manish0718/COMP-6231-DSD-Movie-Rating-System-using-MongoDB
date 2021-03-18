@@ -6,8 +6,9 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 
 # from forms import LoginForm, RegisterForm, ContactForm, ResetForm, FeedBackForm
 
+
 # basic setup
-app = Flask(__name__,template_folder='templates')
+app = Flask(__name__)
 Bootstrap(app)
 app.secret_key = "key"
 
@@ -19,6 +20,11 @@ app.secret_key = "key"
 @app.route('/')
 def index():
     return render_template('unprotected/unprotectedHome.html')
+
+
+# client part
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
