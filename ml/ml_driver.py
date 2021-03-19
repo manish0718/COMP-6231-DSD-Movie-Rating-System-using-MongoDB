@@ -1,8 +1,12 @@
 import modelling
 import preprocessor
 
+def knn_run(user_input_str):
+    df_for_knn_sparse, df_for_knn = preprocessor.knn_preprocess()
+    return modelling.knn_modelling_output(df_for_knn_sparse, df_for_knn, user_input_str)
 
-def final_result_toString(df_res, user_input_str='Men in Black II'):
+
+def apriori_final_result_toString(df_res, user_input_str='Men in Black II'):
     """
     the function that sort the result after tranning and return as list
     :param df_res:
@@ -29,14 +33,14 @@ def final_result_toString(df_res, user_input_str='Men in Black II'):
     return movie_list[0:10]
 
 
-def test_ml_run(user_input_str='Men in Black II'):
+def test_apriori_run(user_input_str='Men in Black II'):
     """
     the test case for ml running
     :param user_input_str: Men in Black II
     """
-    result = modelling.interpret_results(modelling.tranning(preprocessor.preprocess()))
+    result = modelling.interpret_results(modelling.apriori_tranning(preprocessor.apriori_preprocess()))
     print("your recommendation movies list is below: ")
-    print(final_result_toString(result, user_input_str))
+    print(apriori_final_result_toString(result, user_input_str))
 
 
 def ml_run(user_input_str):
@@ -45,9 +49,12 @@ def ml_run(user_input_str):
     :param user_input_str:
     :return: list of recommendation movies for users
     """
-    result = modelling.interpret_results(modelling.tranning(preprocessor.preprocess()))
-    return final_result_toString(result, user_input_str)
+    apriori_res = modelling.interpret_results(modelling.apriori_tranning(preprocessor.apriori_preprocess()))
+    apriori_recommendation_list=apriori_final_result_toString(apriori_res, user_input_str)
+    knn_recommendation_list=knn_run(user_input_str)
+    final_recommendation_list=apriori_recommendation_list+knn_recommendation_list
+    return list(set(final_recommendation_list))
 
 
 if __name__ == "__main__":
-    test_ml_run()
+    print(ml_run("Men in Black II"))

@@ -4,6 +4,12 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import json
 
+from IPython.core.interactiveshell import InteractiveShell
+
+InteractiveShell.ast_node_interactivity = "all"
+from scipy.sparse import csr_matrix
+from sklearn.neighbors import NearestNeighbors
+
 from os import path
 
 resourcePath = '/resource'
@@ -56,13 +62,13 @@ def pivot(p_dataframe):
     return df_pivot
 
 
-def preprocess():
+def apriori_preprocess():
     """
     using pivot on the dataframe. To do so you need to first make sure there are no duplicate records for
     the combination of userId and title.
     :return: pviot
     """
-    print("preprocessing data...")
+    print("preprocessing apriori data...")
     movies_data = data_loading("../resource/movies_metadata.csv")
     rating_data = data_loading("../resource/ratings_small.csv")
 
@@ -94,12 +100,58 @@ def preprocess():
     # movieid and id are duplicated, keep only one
     dataframe = dataframe.drop_duplicates(['userId', 'title'])
     df_pivot = pivot(dataframe)
-    seeDetail(df_pivot)
+    # seeDetail(df_pivot)
 
     #write json to file
     json.dump(fromDataframeToJson(dataframe), open('../resource/dict.json', 'w', encoding='utf-8'), indent=4)
 
     return df_pivot
+
+def knn_preprocess():
+    """
+    knn machine learning
+    :return:
+    """
+    """
+    preprocess part
+    """
+    print("knn preprocessing...")
+    ratings_df = pd.read_csv("../resource/ratings_small.csv")
+    movies_df = pd.read_csv("../resource/movies_metadata.csv")
+
+    # Merge the two dataframe to keep only userId, movieId, rating and title data
+    movies_df.drop(movies_df.index[19730], inplace=True)
+    movies_df.drop(movies_df.index[29502], inplace=True)
+    movies_df.drop(movies_df.index[35585], inplace=True)
+    movies_df.id = movies_df.id.astype(np.int64)
+    ratings_df = pd.merge(ratings_df, movies_df[['title', 'id']], left_on='movieId', right_on='id')
+    ratings_df.drop(['timestamp', 'id'], axis=1, inplace=True)
+    print("rating documents shape:", ratings_df.shape)
+    print("null check:\n", ratings_df.isnull().sum())
+
+    # number of ratings for each movie
+    ratings_count = \
+        ratings_df.groupby(by="title")['rating'].count().reset_index().rename(columns={'rating': 'totalRatings'})[
+            ['title', 'totalRatings']]
+
+    ratings_total = pd.merge(ratings_df, ratings_count, on='title', how='left')
+    # statistics for the totalRatings
+    print(ratings_count['totalRatings'].describe())
+
+    # About top 21% of the movies received more than 20 votes. Let's remove all the other movies
+    # so that we are only left with significant movies (in terms of total votes count)
+    votes_count_threshold = 20
+    ratings_top = ratings_total.query('totalRatings > @votes_count_threshold')
+
+    # Make data consistent by ensuring there are unique entries for [title,userId] pairs
+    if not ratings_top[ratings_top.duplicated(['userId', 'title'])].empty:
+        ratings_top = ratings_top.drop_duplicates(['userId', 'title'])
+
+    # Reshape the data using pivot function
+    df_for_knn = ratings_top.pivot(index='title', columns='userId', values='rating').fillna(0)
+    # use sparse matrix representation of this matrix
+    df_for_knn_sparse = csr_matrix(df_for_knn.values)
+    return df_for_knn_sparse, df_for_knn
 
 
 
