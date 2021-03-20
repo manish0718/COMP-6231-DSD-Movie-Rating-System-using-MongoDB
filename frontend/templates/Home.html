@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width">
+<head>
+<style> 
+
+ body{
+  
+    background-image:url({{ url_for('static', filename='bg.png') }});  
+	
+	background-repeat: no-repeat; 
+    background-position: center; 
+    background-size: cover; 
+	background-attachment: fixed;
+	z-index:0;
+  
+
+ }
+
+ .input-1{
+ 
+    background-image:url({{ url_for('static', filename='movie.png') }}); 
+    height: 100%;  
+ 
+    background-repeat: no-repeat; 
+    background-position: center; 
+    background-size: cover; 
+	border-radius:25px;
+	z-index:1;
+ 
+ }
+ 
+ .submit-name{
+ 
+    background-color: #00FF00 ; 
+    height: 100%;  
+ 
+    background-repeat: no-repeat; 
+    background-position: center; 
+    background-size: cover; 
+ 
+ 
+ }
+
+</style>
+<title>Movie Rating System</title>
+</head>
+<body >
+<h5 style = "text-align: center ; font-size:185% ;color:#FFFFFF";>MOVIE RATING SYSTEM</h5>
+<form action="{{url_for('fetch')}}" method="post">
+<div class="input-1" style="position: absolute; left: 22%; top: 25%; width: 60%; height: 40%; border: 6px solid white; ">
+<input name="MovieName" type="text" style="position:relative ;width: 70%; height: 17%; top:30%; left:5% ; font-size:100%;"  method="POST" placeholder="Movie Name" >
+<input  class = "submit-name" type="submit" style="position:relative; height:20% ; width:15% ; top:30%; left:5%" ></input>
+</div>
+</form>
+</body>
+</html>
