@@ -1,4 +1,4 @@
-from flask import Flask , jsonify, request , render_template  
+from flask import Flask , jsonify, request , render_template , flash  
 import pymongo 
   
 
@@ -7,16 +7,53 @@ app = Flask(__name__)
 client = pymongo.MongoClient(connection_url) 
 
 db = client.get_database('sample_airbnb') 
+db1 = client.get_database('Clients')
 
 app.secret_key = "key"
 
+@app.route("/")
+def login():
+    return render_template("login.html")
+
+@app.route("/home")
+def home():
+    return render_template("Home.html")
+
+@app.route("/Contact")
+def contact():
+    return render_template("Contact.html")
+
+@app.route("/About")
+def about():
+    return render_template("About.html")
 
 
+@app.route('/login', methods=['GET','POST'])
+def authentication():
+    
+    if request.method == "POST":
+        username = request.form["Username"]
+        password = request.form["Password"]
+        if(username and password):
+            queryObject = {'Name':username,'Password':password}
+            query = db1.users.find_one(queryObject)
+            if(query):
+                try:
+                    print(query)                
+                except:
+                    print("Error")
+                finally:
+                    return render_template("Home.html")
+                
+            else:
+                flash("Incorrect Credentials")
+                return render_template("login.html")
+        else:
+            flash("Empty Credentials")
+            return render_template("login.html")
+                
 
-@app.route('/')
-def index():
-    return render_template('Home.html')
-
+    
 @app.route("/Movie_Name",methods=['GET','POST'])
 def fetch():
     if request.method == "POST":
@@ -24,11 +61,11 @@ def fetch():
         if name:
             try:
                 queryObject = {name: 361} 
-                query = db.listingsAndReviews.find_one(queryObject , {name:1}) 
+                query = db.listingsAndReviews.find_one(queryObject) 
                 query.pop('_id') 
                 query = jsonify(query) 
             except:
-                print("error")
+                return render_template("Home.html")
             finally:
                 return render_template("Result.html", data = query)
         
