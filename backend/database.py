@@ -28,4 +28,7 @@ def read_mongo(db, collection, query={}, no_id=True):
     if no_id:
         del df['_id']
 
+    pd.options.display.max_columns = None
+    pd.options.display.width = None
+
     return df
