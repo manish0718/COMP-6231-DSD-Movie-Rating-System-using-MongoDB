@@ -1,6 +1,6 @@
 from flask import Flask , jsonify, request , render_template , flash  
-import pymongo 
-  
+import pymongo
+
 
 connection_url = 'mongodb+srv://m001-student:M001MongoBasics@sandbox.punqd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 app = Flask(__name__) 
@@ -10,6 +10,8 @@ db = client.get_database('sample_airbnb')
 db1 = client.get_database('Clients')
 
 app.secret_key = "key"
+
+
 
 @app.route("/")
 def login():
@@ -67,6 +69,9 @@ def fetch():
             except:
                 return render_template("Home.html")
             finally:
+
+
+
                 return render_template("Result.html", data = query)
         
   

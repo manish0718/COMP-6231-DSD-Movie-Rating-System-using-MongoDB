@@ -8,14 +8,13 @@ from IPython.core.interactiveshell import InteractiveShell
 
 InteractiveShell.ast_node_interactivity = "all"
 from scipy.sparse import csr_matrix
-from sklearn.neighbors import NearestNeighbors
 
 from os import path
 
 resourcePath = '/resource'
 dictPath = '/dict'
 count = 0
-df_pivot=None
+df_pivot = None
 
 
 def seeDetail(dataframe):
@@ -30,8 +29,10 @@ def fromCsvToJsonDict(p_filepath):
     jsonData = pd.DataFrame.to_json(l_RawData)
     return jsonData
 
+
 def fromDataframeToJson(p_dataframe):
     return pd.DataFrame.to_json(p_dataframe)
+
 
 def data_loading(p_filepath):
     if path.exists(p_filepath):
@@ -40,7 +41,6 @@ def data_loading(p_filepath):
     else:
         print("Error: file path not exist")
         return None
-
 
 
 def pivot(p_dataframe):
@@ -82,8 +82,6 @@ def apriori_preprocess():
         ax.text(i, v + 100, str(v), horizontalalignment='center', size=14, color='black')
     plt.show()
 
-
-
     # clean data that wont help
     print("removing useless data")
     title_mask = movies_data["title"].isna()
@@ -102,10 +100,11 @@ def apriori_preprocess():
     df_pivot = pivot(dataframe)
     # seeDetail(df_pivot)
 
-    #write json to file
-    json.dump(fromDataframeToJson(dataframe), open('../resource/dict.json', 'w', encoding='utf-8'), indent=4)
+    # write json to file
+    # json.dump(fromDataframeToJson(dataframe), open('../resource/dict.json', 'w', encoding='utf-8'), indent=4)
 
     return df_pivot
+
 
 def knn_preprocess():
     """
@@ -152,6 +151,3 @@ def knn_preprocess():
     # use sparse matrix representation of this matrix
     df_for_knn_sparse = csr_matrix(df_for_knn.values)
     return df_for_knn_sparse, df_for_knn
-
-
-
