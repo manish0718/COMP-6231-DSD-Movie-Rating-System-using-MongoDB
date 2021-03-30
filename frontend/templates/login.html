@@ -135,7 +135,7 @@
 {% endwith %}
 </div>
 <form action="{{url_for('authentication')}}" method="post">
-<div class="input-1" style="position: absolute; left: 37%; top: 28%; width: 40%; height: 40%;">
+<div class="input-1" style="position: absolute; left: 37%; top: 25%; width: 40%; height: 50%;">
 <span style="position:absolute ;top:20%; left:0% ;color:white"><h3>Username</h3></span>
 <input name="Username" type="text" style="position:absolute ;width: 50%; height: 10%; top:30%; left:0% ; font-size:100%;"  method="POST" placeholder="Username" >
 <span style="position:absolute ;top:45%; left:0% ;color:white"><h3>Password</h3></span>
@@ -143,5 +143,9 @@
 <input  class = "submit-name"  value="Login" type="submit" style="position:relative; height:13% ; width:45% ; top:70%; left:3%;font-size:130%" ></input>
 </div>
 </form>
+<span style="position:absolute ;top:70%; left:45% ;color:white"><h2>OR</h2></span>
+<a href="{{url_for('SignUp')}}">
+<input  class = "submit-name"  value="SignUp" type="submit" style="position:absolute; height:6% ; width:15% ; top:75%; left:39.5%; font-size:130%" ></input>
+</a>
 </body>
 </html>
