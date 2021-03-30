@@ -29,6 +29,14 @@ def contact():
 def about():
     return render_template("About.html")
 
+@app.route("/Search")
+def ML():
+    return render_template("Machine Learning.html")
+
+@app.route("/SignUp")
+def SignUp():
+    return render_template("SignUp.html")
+
 
 @app.route('/login', methods=['GET','POST'])
 def authentication():
@@ -73,6 +81,33 @@ def fetch():
 
 
                 return render_template("Result.html", data = query)
+            
+
+@app.route("/Register",methods=['GET','POST'])
+def register():
+    if request.method == "POST":
+        username = request.form["Username"]
+        password = request.form["Password"]
+        ID = request.form["ID"]
+        if username and password and ID:
+            try:
+                db = client.Clients
+                user = {            
+                    "id": ID,
+                    "Name":username,
+                    "Password":password                     
+                    }
+        
+                db.users.insert_one(user)
+            except:
+                flash("Something Went Wrong")
+                return render_template("SignUp.html")
+            finally:
+                flash("Successfully Registered")
+                return render_template("login.html")
+        else:
+            flash("Something Went Wrong")
+            return render_template("SignUp.html")
         
   
 
