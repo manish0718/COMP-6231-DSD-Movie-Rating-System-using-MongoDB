@@ -12,13 +12,13 @@ def connect_to_MongoDB():
             my_client = MongoClient(database_uri, connectTimeoutMS=200, retryWrites=True)
             print(my_client.stats)
             print("Notice: connected to mongodb atlas")
-            print(my_client.list_database_names())
-            print("Notice: connected to MovieRating Database")
+            # print(my_client.list_database_names())
+
             movie_rating_database = my_client["MovieRating"]
             return movie_rating_database
         except:
             l_count += 1
             print("Error: can't connect to mongodb atlas or connection timeout, please try again")
-
+    print("Notice: connected to MovieRating Database")
 
 

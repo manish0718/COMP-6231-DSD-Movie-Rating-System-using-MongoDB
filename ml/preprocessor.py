@@ -3,6 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import json
+from backend import datalink
+from pandas.io.json import json_normalize
 
 from IPython.core.interactiveshell import InteractiveShell
 
@@ -34,13 +36,20 @@ def fromDataframeToJson(p_dataframe):
     return pd.DataFrame.to_json(p_dataframe)
 
 
-def data_loading(p_filepath):
+def data_loading_fromcsv(p_filepath):
     if path.exists(p_filepath):
         print("loading data success, path:" + p_filepath)
         return pd.read_csv(p_filepath)
     else:
         print("Error: file path not exist")
         return None
+
+
+def get_collection(collection_name):
+    db = datalink.connect_to_MongoDB()
+
+
+    return df
 
 
 def pivot(p_dataframe):
@@ -68,9 +77,12 @@ def apriori_preprocess():
     the combination of userId and title.
     :return: pviot
     """
+
     print("preprocessing apriori data...")
-    movies_data = data_loading("../resource/movies_metadata.csv")
-    rating_data = data_loading("../resource/ratings_small.csv")
+    movies_data = data_loading_fromcsv("../resource/movies_metadata.csv")
+    rating_data = data_loading_fromcsv("../resource/ratings_small.csv")
+    # movies_data = get_collection("movies_metadata")
+    # rating_data = get_collection("ratings_small")
 
     plt.figure(figsize=(10, 5))
     ax = sns.countplot(data=rating_data, x='rating')
@@ -109,15 +121,13 @@ def apriori_preprocess():
 def knn_preprocess():
     """
     knn machine learning
-    :return:
-    """
-    """
-    preprocess part
+    :return: preprocess data
     """
     print("knn preprocessing...")
     ratings_df = pd.read_csv("../resource/ratings_small.csv")
     movies_df = pd.read_csv("../resource/movies_metadata.csv")
-
+    # ratings_df = get_collection("ratings_small")
+    # movies_df = get_collection("movies_metadata")
     # Merge the two dataframe to keep only userId, movieId, rating and title data
     movies_df.drop(movies_df.index[19730], inplace=True)
     movies_df.drop(movies_df.index[29502], inplace=True)

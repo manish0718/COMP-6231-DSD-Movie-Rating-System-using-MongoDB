@@ -1,5 +1,6 @@
-import modelling
-import preprocessor
+from ml import modelling
+from ml import preprocessor
+
 
 def knn_run(user_input_str):
     df_for_knn_sparse, df_for_knn = preprocessor.knn_preprocess()
