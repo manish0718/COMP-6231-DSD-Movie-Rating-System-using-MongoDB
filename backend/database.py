@@ -69,7 +69,7 @@ def update(file,collection):
     with open(file) as f:
         file_data = json.load(f)
 
-    collections.insert_many(file_data)
+    collections.insert_one(file_data)
 
     print("Data inserted on mongodb atlas")
 
@@ -148,8 +148,8 @@ if __name__ == "__main__":
         try:
             path = "C:\\MovieRatingDS-main\\resource\\test.json"
             update(file=path,collection='xyz')
-            mongodb = get_collection(collection='xyz')
-            print(mongodb.head())
+            mongodb = get_collection(collection='credits')
+            print(mongodb.head(5))
             print("my_server setup ready..")
             my_server.serve_forever()
         except KeyboardInterrupt:
