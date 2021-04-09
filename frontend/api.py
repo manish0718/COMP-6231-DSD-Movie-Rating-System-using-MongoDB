@@ -1,15 +1,13 @@
 from flask import Flask , jsonify, request , render_template , flash  
-import pymongo
+import client
 
 
-connection_url = 'mongodb+srv://m001-student:M001MongoBasics@sandbox.punqd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 app = Flask(__name__) 
-client = pymongo.MongoClient(connection_url) 
-
-db = client.get_database('sample_airbnb') 
-db1 = client.get_database('Clients')
 
 app.secret_key = "key"
+
+db , db1 = client.connect_with_mongoDb()
+ClientStub = client.conncet_with_server()
 
 
 
@@ -38,15 +36,16 @@ def SignUp():
     return render_template("SignUp.html")
 
 
+
 @app.route('/login', methods=['GET','POST'])
 def authentication():
     
     if request.method == "POST":
         username = request.form["Username"]
         password = request.form["Password"]
-        if(username and password):
+        if(username and password and db):
             queryObject = {'Name':username,'Password':password}
-            query = db1.users.find_one(queryObject)
+            query = db.users.find_one(queryObject)
             if(query):
                 try:
                     print(query)                
@@ -68,19 +67,29 @@ def authentication():
 def fetch():
     if request.method == "POST":
         name = request.form["MovieName"]
+        
         if name:
+            
             try:
-                queryObject = {name: 361} 
-                query = db.listingsAndReviews.find_one(queryObject) 
-                query.pop('_id') 
-                query = jsonify(query) 
+                print(ClientStub)
+                Movie =ClientStub.getrecommend(name)
+                print(Movie)
+                json_movie=[]
+                print("Fetching")
+
+                for movie in Movie:
+                    queryObject = {"title": movie}
+                    query = db1.movies_metadata.find_one(queryObject,{"revenue":1,"runtime":1})
+                    query.pop('_id')
+                    json_movie.append(query)
+                    print(json_movie)
+                    
+                return json_movie
+                    
             except:
                 return render_template("Home.html")
             finally:
-
-
-
-                return render_template("Result.html", data = query)
+                return render_template("Result.html",data=json_movie)
             
 
 @app.route("/Register",methods=['GET','POST'])
