@@ -1,10 +1,13 @@
 # my_server program
 import sys
+from flask import jsonify
+
+sys.path.append('../')
 
 from bson.json_util import dumps
+import json
 import datalink
 from ml import ml_driver
-# import rpc module
 from xmlrpc.server import SimpleXMLRPCRequestHandler
 from xmlrpc.server import SimpleXMLRPCServer
 
@@ -17,7 +20,7 @@ movie_metadata_collection = None
 
 # Restrict to a particular path.
 class RequestHandler(SimpleXMLRPCRequestHandler):
-    rpc_paths = ('/',)
+    rpc_paths = ('/RPC2',)
 
 
 def serverSetUp():
@@ -49,9 +52,12 @@ def getRecommMovieList(p_input_str):
     :return: str list
     """
 
-    str_list = retrievingDetailsOfMovies(ml_driver.ml_run(p_input_str))
+    #str_list = retrievingDetailsOfMovies(ml_driver.ml_run(p_input_str))
+    str_list = ml_driver.ml_run(p_input_str)
     return str_list
 
+def check():
+    return "Done"
 
 def retrievingDetailsOfMovies(movie_title_list):
     """
@@ -62,24 +68,25 @@ def retrievingDetailsOfMovies(movie_title_list):
     # mongodb = DatasetUpload.MongoDB(dBName='MoviesRating', collectionName='movies_metadata')
     for movie in movie_title_list:
         movie_doc = movie_metadata_collection.find({"title": movie})
-        movies_list.append(movie_doc)
-        print("Retrieving document for movie: " + movie)
-        for document in movie_doc:
-            print(dumps(document))
-    return movies_list
+        #movies_list.append(json.dumps(movie_doc))
+        print("Retrieving document for movie: " + movie_doc)
+        print(movies_list)
+    return movie_title_list
 
 
 if __name__ == "__main__":
     serverSetUp()
-    with SimpleXMLRPCServer(('localhost', 8000),
-                            requestHandler=RequestHandler) as my_server:
+    with SimpleXMLRPCServer(('localhost', 8000)) as my_server:
         my_server.register_introspection_functions()
         my_server.register_function(searchHandler, 'searchmovie')
         my_server.register_function(getRecommMovieList, 'getrecommend')
+        my_server.register_function(check,'check')
+
     # title_list = ['Toy Story', 'Jumanji', 'Grumpier Old Men', 'Father of the Bride Part II']
     # title_list = getRecommMovieList('Toy Story')
-    # retrievingDetailsOfMovies(title_list)
-    # Run the my_server's main loop
+    # print(title_list)
+    # #retrievingDetailsOfMovies(title_list)
+    
 
         try:
             print("my_server setup ready..")
