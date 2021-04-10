@@ -51,11 +51,14 @@ def ml_run(user_input_str):
     :return: list of recommendation movies for users
     """
     apriori_res = modelling.interpret_results(modelling.apriori_tranning(preprocessor.apriori_preprocess()))
-    apriori_recommendation_list=apriori_final_result_toString(apriori_res, user_input_str)
-    knn_recommendation_list=knn_run(user_input_str)
-    final_recommendation_list=apriori_recommendation_list+knn_recommendation_list
-    return list(set(final_recommendation_list))
+    apriori_recommendation_list = apriori_final_result_toString(apriori_res, user_input_str)
+    knn_recommendation_list = knn_run(user_input_str)
+    final_recommendation_list = apriori_recommendation_list + knn_recommendation_list
+    final_recommendation_list = list(set(final_recommendation_list))
+    print(final_recommendation_list)
+    return final_recommendation_list
 
 
+# test only
 if __name__ == "__main__":
-    print(ml_run("Men in Black II"))
+    print(ml_run("Young and Innocent"))
