@@ -1,6 +1,7 @@
 # my_server program
 import sys
-import xmlrpc.client
+from socketserver import ThreadingMixIn
+
 import pymongo
 
 sys.path.append('../')
@@ -43,6 +44,8 @@ class RequestHandler(SimpleXMLRPCRequestHandler):
                           self.log_date_time_string(),
                           format % args))
 
+class SimpleThreadedXMLRPCServer(ThreadingMixIn, SimpleXMLRPCServer):
+    pass
 
 def serverSetUp():
     """
@@ -143,16 +146,15 @@ def retrievingDetailsOfMovies(movie_title_list):
         print(movies_list)
     return movie_title_list
 
-
-if __name__ == "__main__":
+def run_server(host="localhost", port=8000):
     serverSetUp()
-    with SimpleXMLRPCServer(('localhost', 8000), logRequests=True, allow_none=True) as my_server:
+    server_addr = (host, port)
+    with SimpleThreadedXMLRPCServer((server_addr), logRequests=True, allow_none=True) as my_server:
         my_server.register_introspection_functions()
         my_server.register_function(searchHandler, 'searchmovie')
         my_server.register_function(getRecommMovieList, 'getrecommend')
         my_server.register_function(mongo_instance, 'atlas_instance')
         my_server.register_function(mongo_register, 'register')
-        
 
         # title_list = ['Toy Story', 'Jumanji', 'Grumpier Old Men', 'Father of the Bride Part II']
         # title_list = getRecommMovieList('Toy Story')
@@ -167,5 +169,9 @@ if __name__ == "__main__":
         except KeyboardInterrupt:
             print("*******************************************************")
             print("\nKeyboard interrupt received, exiting.")
-        
+
             sys.exit(0)
+
+
+if __name__ == "__main__":
+    run_server()
