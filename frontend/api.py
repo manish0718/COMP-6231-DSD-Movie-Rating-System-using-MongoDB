@@ -85,7 +85,7 @@ def authentication():
 def fetch():
     if request.method == "POST":
         name = request.form["MovieName"]
-
+        rating = request.form["MovieRating"]
         if name:
             l_count = 0;
             while(l_count<5):
