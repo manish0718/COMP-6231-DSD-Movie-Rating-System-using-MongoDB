@@ -35,7 +35,9 @@ def data_loading_fromcsv(p_filepath):
     :return:
     """
     if path.exists(p_filepath):
+        print("*******************************************************")
         print("loading data success, path:" + p_filepath)
+        print("*******************************************************")
         return pd.read_csv(p_filepath)
     else:
         print("Error: file path not exist")
@@ -80,6 +82,8 @@ def raw_process():
 
     movies_data = get_data("movies_metadata")
     rating_data = get_data("ratings_small")
+    #movies_data = data_loading_fromcsv("../resource/movies_metadata.csv")
+    #rating_data = data_loading_fromcsv("../resource/ratings_small.csv")
 
     plt.figure(figsize=(10, 5))
     ax = sns.countplot(data=rating_data, x='rating')
@@ -112,8 +116,9 @@ def apriori_preprocess():
     apriori preprocess
     :return: pviot
     """
-
+    print("*******************************************************")
     print(" Apriori preprocessing...")
+    print("*******************************************************")
     global BeautifulSoup
 
     if BeautifulSoup is None:
@@ -130,7 +135,9 @@ def knn_preprocess():
     knn machine learning
     :return: preprocess data
     """
+    print("*******************************************************")
     print("Knn preprocessing...")
+    print("*******************************************************")
     global BeautifulSoup
 
     if BeautifulSoup is None:
