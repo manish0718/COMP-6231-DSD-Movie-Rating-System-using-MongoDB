@@ -1,11 +1,10 @@
 # my_server program
 import sys
-from flask import jsonify
+import xmlrpc.client
+import pymongo
 
 sys.path.append('../')
 
-from bson.json_util import dumps
-import json
 import database
 from ml import ml_driver
 from xmlrpc.server import SimpleXMLRPCRequestHandler
@@ -79,8 +78,55 @@ def getRecommMovieList(p_input_str):
     return str_list
 
 
-def check():
-    return "Done"
+
+def mongo_instance(username,password):
+    try:
+        connection_url = 'mongodb+srv://manish:manish@cluster0.dfnnv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+        client = pymongo.MongoClient(connection_url) 
+        db = client.get_database("Clients")
+        queryObject = {'Name': username, 'Password': password}
+        query = db.users.find_one(queryObject)
+        if(query):
+            print("***************************************************")
+            print(username + " Successfully Loged In")
+            print("***************************************************")
+    except:
+        print("***************************************************")
+        print("Connection Failed With MongoDb Cloud")
+        print("User Was not able to successfully log in")
+        print("***************************************************")
+        return False
+    finally:
+        return True
+    
+    
+def mongo_register(username,password,ID):
+    try:
+        connection_url = 'mongodb+srv://manish:manish@cluster0.dfnnv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+        instance = pymongo.MongoClient(connection_url) 
+        db = instance.Clients
+        user = {
+            "id": ID,
+            "Name": username,
+            "Password": password
+            }
+    
+        db.users.insert_one(user)
+        queryObject = {'Name': username, 'Password': password}
+        query = db.users.find_one(queryObject)
+        if(query):
+            print("***************************************************")
+            print(username + " Successfully Registered With Us")
+            print("***************************************************")
+
+    except:
+        print("***************************************************")
+        print("Connection Failed With MongoDb Cloud")
+        print("User was not able to successfully register with us")
+        print("***************************************************")
+        return False
+    finally:
+        return True
 
 
 def retrievingDetailsOfMovies(movie_title_list):
@@ -104,7 +150,9 @@ if __name__ == "__main__":
         my_server.register_introspection_functions()
         my_server.register_function(searchHandler, 'searchmovie')
         my_server.register_function(getRecommMovieList, 'getrecommend')
-        my_server.register_function(check, 'check')
+        my_server.register_function(mongo_instance, 'atlas_instance')
+        my_server.register_function(mongo_register, 'register')
+        
 
         # title_list = ['Toy Story', 'Jumanji', 'Grumpier Old Men', 'Father of the Bride Part II']
         # title_list = getRecommMovieList('Toy Story')
@@ -112,8 +160,12 @@ if __name__ == "__main__":
         # #retrievingDetailsOfMovies(title_list)
 
         try:
+            print("*******************************************************")
             print("my_server setup ready..")
+            print("*******************************************************")
             my_server.serve_forever()
         except KeyboardInterrupt:
+            print("*******************************************************")
             print("\nKeyboard interrupt received, exiting.")
+        
             sys.exit(0)

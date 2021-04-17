@@ -12,18 +12,27 @@ def _connect_mongo(db_name="MovieRating"):
 
     l_count = 0
     while (l_count < 5):
+        print("*******************************************************")
         print("Attempt to connect mongodb atlas (", l_count, ") times")
+        print("*******************************************************")
         try:
-            my_client = MongoClient(mongo_uri, connectTimeoutMS=200, retryWrites=True)
+            my_client = MongoClient(mongo_uri, connectTimeoutMS=2000000, retryWrites=True)
+            print("*******************************************************")
             print(my_client.stats)
+            print("*******************************************************")
             print("Notice: connected to mongodb atlas")
+            print("*******************************************************")
             print(my_client.list_database_names())
+            print("*******************************************************")
             print("Notice: connected to MovieRating Database")
             movie_rating_database = my_client[db_name]
             return movie_rating_database
         except:
             l_count += 1
+            print("******************************************************************************")
             print("Error: can't connect to mongodb atlas or connection timeout, please try again")
+            print("******************************************************************************")
+
 
 
 def get_collection(collection, no_id=True):
