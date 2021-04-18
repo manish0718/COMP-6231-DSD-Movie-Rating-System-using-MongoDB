@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<style>
-
-  *{
+<head>
+<style> 
+*{
     padding:0px;
 	margin:0px;
 	box-sizing:border-box;
@@ -48,44 +46,6 @@
  .active {
    background-color: #4CAF50;
  } 
-
- body{
-  
-    background-image:url({{ url_for('static', filename='home.png') }});  
-	height:100%
-	
-	background-repeat: no-repeat; 
-    background-position: center; 
-    background-size: cover; 
-	z-index:0;
-  
-
- }
-
- .input-1{
- 
-    background-image:url({{ url_for('static', filename='movie.png') }}); 
-    height: 100%;  
- 
-    background-repeat: no-repeat; 
-    background-position: center; 
-    background-size: cover; 
-	border-radius:25px;
-	z-index:1;
- 
- }
- 
- .submit-name{
- 
-    background-color: #00FF00 ; 
-    height: 100%;  
- 
-    background-repeat: no-repeat; 
-    background-position: center; 
-    background-size: cover; 
- 
- 
- }
  
  @media screen and (max-width: 870px){ 
  
@@ -128,11 +88,20 @@
  .active {
    background-color: #4CAF50;
  } 
+   .msg{
+    position:absolute;
+	left:30%;
+	top:30%;
+	width:35%
+	height:20%;
+	font-size:200%;
+	color:black;
  
  }
-
+ 
+ }
 </style>
-<title>Movie Recommendation System</title>
+<title>Response</title>
 </head>
 <body >
 <ul>
@@ -142,8 +111,14 @@
   <li><a href="{{url_for('Update')}}">Update Movies</a></li>
   <li><a href="{{url_for('Delete')}}">Delete Movies</a></li>
 </ul>
-<h5 style = "text-align: center ; font-size:185% ;color:#FFFFFF";>MOVIE RECOMMENDATION SYSTEM</h5>
-<marquee behavior="slide" direction="left" style="position:absolute;top:60%;color:white;" ><h1>WELCOME</h1></marquee>
-</form>
+<div class="msg">
+{% with messages = get_flashed_messages() %}  
+         {% if messages %}  
+               {% for message in messages %}  
+                    <center><h1><b>{{ message }}</b></h1></center>  
+               {% endfor %}  
+         {% endif %}  
+{% endwith %}
+</div>
 </body>
 </html>
