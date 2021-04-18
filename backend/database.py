@@ -92,3 +92,33 @@ def update(file, collection):
 
     return False
 
+def updateUserData(updateData):
+    # Connect to MongoDB
+    db = _connect_mongo("MovieRating")
+
+    col1 = db["movies_metadata"]
+    col2 = db["ratings_small"]
+
+    # data for ratings
+    movieID = updateData["movieId"]
+    userId = updateData["userId"]
+    timestamp = updateData["timestamp"]
+
+    # date for moviedataset
+    title = updateData["title"]
+    id = updateData["id"]
+
+    filter1 = { 'title': title }
+    newMovieValues = {"$set": {"title": title, "id": id}}
+    filter2 = { 'userId': userId }
+    newRatingValues = {"$set": {"movieID": movieID, "userId": userId, "timestamp": timestamp }}
+
+    x = col1.update_one(filter1, newMovieValues, upsert=True)
+    y = col2.update_one(filter2, newRatingValues, upsert=True)
+
+    if(x.acknowledged and y.acknowledged):
+        print("Data successfully updated.")
+        return True
+
+    return False
+
