@@ -144,3 +144,24 @@ def deleteUserData(data):
 
     return False
 
+def searchUserData(data):
+    # Connect to MongoDB
+    db = _connect_mongo("MovieRating")
+
+    col1 = db["movies_metadata"]
+    col2 = db["ratings_small"]
+
+    # data for ratings
+    movieID = data["movieId"]
+
+    # data for moviedataset
+    title = data["title"]
+
+    for x in col1.find({"title": title}, {"_id": 0, "title": 1, "id": 1}):
+        print("Printing Movie details.")
+        print(x)
+
+    for y in col2.find({"movieID": movieID}, {"_id": 0, "movieID": 1, "userId": 1, "timestamp": 1}):
+        print("Printing rating details.")
+        print(y)
+
