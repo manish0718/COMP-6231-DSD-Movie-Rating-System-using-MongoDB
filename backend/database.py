@@ -77,11 +77,17 @@ def insertUserData(insertData):
     db = _connect_mongo("MovieRating")
 
     movie_collection = db["movies_metadata"]
-    myMoviesData = { "id": insertData['id'], "title": insertData['title']}
+    myMoviesData = {"id": insertData['id'], "title": insertData['title'], "adult": "False",
+                    "belongs_to_collection": "NaN", "budget": " ", "genres": " ", "homepage": "NaN", "imdb_id": " ",
+                    "original_language": " ", "original_title": " ", "overview": " ", "popularity": "",
+                    "poster_path": " ", "production_companies": " ", "production_countries": " ", "release_date": " ",
+                    "revenue": " ", "runtime": " ", "spoken_languages": " ", "status": " ", "tagline": " ",
+                    "video": "false", "vote_average": " ", "vote_count": " "}
     insertedMovieID = movie_collection.insert_one(myMoviesData)
 
     rating_collection = db["ratings_small"]
-    myRatingsData = {"userId": insertData['userId'], "movieId": insertData['movieId'], "timestamp": insertData['timestamp']}
+    myRatingsData = {"userId": insertData['userId'], "movieId": insertData['movieId'],
+                     "timestamp": insertData['timestamp'], "rating": " "}
     insertedRatingId = rating_collection.insert_one(myRatingsData)
 
     if insertedMovieID.acknowledged and insertedRatingId.acknowledged:
@@ -107,9 +113,14 @@ def updateUserData(updateData):
     id = updateData["id"]
 
     filter1 = { 'title': title }
-    newMovieValues = {"$set": {"title": title, "id": id}}
+    newMovieValues = {"$set": {"title": title, "id": id, "adult": "False",
+                               "belongs_to_collection": "NaN", "budget": " ", "genres": " ", "homepage": "NaN", "imdb_id": " ",
+                               "original_language": " ", "original_title": " ", "overview": " ", "popularity": "",
+                               "poster_path": " ", "production_companies": " ", "production_countries": " ", "release_date": " ",
+                               "revenue": " ", "runtime": " ", "spoken_languages": " ", "status": " ", "tagline": " ",
+                               "video": "false", "vote_average": " ", "vote_count": " "}}
     filter2 = { 'userId': userId }
-    newRatingValues = {"$set": {"movieID": movieID, "userId": userId, "timestamp": timestamp }}
+    newRatingValues = {"$set": {"movieID": movieID, "userId": userId, "timestamp": timestamp, "rating": " "}}
 
     x = col1.update_one(filter1, newMovieValues, upsert=True)
     y = col2.update_one(filter2, newRatingValues, upsert=True)
