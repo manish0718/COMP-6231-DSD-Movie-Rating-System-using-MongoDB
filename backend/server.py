@@ -3,6 +3,8 @@ import sys
 from socketserver import ThreadingMixIn
 
 import pymongo
+import warnings
+warnings.filterwarnings("ignore")
 
 sys.path.append('../')
 
@@ -82,18 +84,23 @@ def getRecommMovieList(p_input_str):
     str_list = ml_driver.ml_run(p_input_str)
     return str_list
 
-
-def mongo_instance(username, password):
+def mongo_instance(username,password):
     try:
         connection_url = 'mongodb+srv://manish:manish@cluster0.dfnnv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
-        client = pymongo.MongoClient(connection_url)
+        client = pymongo.MongoClient(connection_url) 
         db = client.get_database("Clients")
         queryObject = {'Name': username, 'Password': password}
         query = db.users.find_one(queryObject)
-        if (query):
+        if(query):
             print("***************************************************")
             print(username + " Successfully Loged In")
             print("***************************************************")
+        else:
+            print("***************************************************")
+            print(username + " Incorrect Credentials")
+            print("***************************************************")
+            return False
+            
     except:
         print("***************************************************")
         print("Connection Failed With MongoDb Cloud")
@@ -102,27 +109,32 @@ def mongo_instance(username, password):
         return False
     finally:
         return True
-
-
-def mongo_register(username, password, ID):
+    
+    
+def mongo_register(username,password,ID):
     try:
         connection_url = 'mongodb+srv://manish:manish@cluster0.dfnnv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
-        instance = pymongo.MongoClient(connection_url)
+        instance = pymongo.MongoClient(connection_url) 
         db = instance.Clients
         user = {
             "id": ID,
             "Name": username,
             "Password": password
-        }
-
+            }
+    
         db.users.insert_one(user)
         queryObject = {'Name': username, 'Password': password}
         query = db.users.find_one(queryObject)
-        if (query):
+        if(query):
             print("***************************************************")
             print(username + " Successfully Registered With Us")
             print("***************************************************")
-
+        else:
+            print("***************************************************")
+            print(username + " Unuccessfully Registration")
+            print("***************************************************")
+            return False
+            
     except:
         print("***************************************************")
         print("Connection Failed With MongoDb Cloud")
