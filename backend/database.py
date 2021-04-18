@@ -1,7 +1,6 @@
 import json
 
 import pandas as pd
-from pip._internal.utils.misc import tabulate
 from pymongo import MongoClient
 
 
@@ -70,11 +69,10 @@ def update(file, collection):
         file_data = json.load(f)
 
     collections.insert_one(file_data)
-
     print("Data inserted on mongodb atlas")
     
     
- def insertUserData(insertData):
+def insertUserData(insertData):
     # Connect to MongoDB
     db = _connect_mongo("MovieRating")
 

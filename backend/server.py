@@ -4,6 +4,7 @@ from socketserver import ThreadingMixIn
 
 import pymongo
 import warnings
+
 warnings.filterwarnings("ignore")
 
 sys.path.append('../')
@@ -84,14 +85,15 @@ def getRecommMovieList(p_input_str):
     str_list = ml_driver.ml_run(p_input_str)
     return str_list
 
-def mongo_instance(username,password):
+
+def mongo_instance(username, password):
     try:
         connection_url = 'mongodb+srv://manish:manish@cluster0.dfnnv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
-        client = pymongo.MongoClient(connection_url) 
+        client = pymongo.MongoClient(connection_url)
         db = client.get_database("Clients")
         queryObject = {'Name': username, 'Password': password}
         query = db.users.find_one(queryObject)
-        if(query):
+        if (query):
             print("***************************************************")
             print(username + " Successfully Loged In")
             print("***************************************************")
@@ -100,7 +102,7 @@ def mongo_instance(username,password):
             print(username + " Incorrect Credentials")
             print("***************************************************")
             return False
-            
+
     except:
         print("***************************************************")
         print("Connection Failed With MongoDb Cloud")
@@ -109,23 +111,23 @@ def mongo_instance(username,password):
         return False
     finally:
         return True
-    
-    
-def mongo_register(username,password,ID):
+
+
+def mongo_register(username, password, ID):
     try:
         connection_url = 'mongodb+srv://manish:manish@cluster0.dfnnv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
-        instance = pymongo.MongoClient(connection_url) 
+        instance = pymongo.MongoClient(connection_url)
         db = instance.Clients
         user = {
             "id": ID,
             "Name": username,
             "Password": password
-            }
-    
+        }
+
         db.users.insert_one(user)
         queryObject = {'Name': username, 'Password': password}
         query = db.users.find_one(queryObject)
-        if(query):
+        if (query):
             print("***************************************************")
             print(username + " Successfully Registered With Us")
             print("***************************************************")
@@ -134,7 +136,7 @@ def mongo_register(username,password,ID):
             print(username + " Unuccessfully Registration")
             print("***************************************************")
             return False
-            
+
     except:
         print("***************************************************")
         print("Connection Failed With MongoDb Cloud")
@@ -160,12 +162,33 @@ def retrievingDetailsOfMovies(movie_title_list):
     return movie_title_list
 
 
+def data_validator(dict):
+    """
+
+    :param dict:
+    :return: True if dict contain all five k,v
+                False if dict contains less than five k,v
+    """
+    for l_each in dict:
+        # check whether value is null
+        if bool(dict[l_each]):
+            # id and movieId are the same object
+            if l_each == "id":
+                dict[l_each] = dict["movieId"]
+            elif l_each == "movieId":
+                dict[l_each] = dict["id"]
+            # if other obj value is null, return false, ask user to input again
+            else:
+                return False
+    return True
+
+
 def insertRequest(dict):
     """
     insert a new movie and its rating to database
     :param dict: dataToinsert = {
         "id": "12345",
-        "title": "Avneet",
+        "title": "example",
         "userId": "5",
         "movieId": "12345",
         "timestamp": "9999999"
@@ -173,7 +196,12 @@ def insertRequest(dict):
     :return:
     """
     print("RPC CALL: INSERT REQUEST")
-    print("not implement yet")
+    data_validator(dict)
+
+    if database.insertUserData(dict):
+        return True
+    else:
+        return False
     return True
 
 
@@ -182,27 +210,38 @@ def updateRequest(dict):
     update current movie data in database
     :param dict: dataToinsert = {
         "id": "12345",
-        "title": "Avneet",
+        "title": "example",
         "userId": "5",
         "movieId": "12345",
         "timestamp": "9999999"
     }
     :return:
     """
+
     print("RPC CALL: UPDATE REQUEST")
-    print("not implement yet")
-    return True
+
+    data_validator(dict)
+
+    if database.updateUserData(dict):
+        return True
+    else:
+        return False
 
 
-def deleteRequest(movie_name_to_del):
+def deleteRequest(dict):
     """
     delete the movie from the database
     :param movie_name_to_del:
     :return:
     """
     print("RPC CALL: DELETE REQUEST")
-    print("not implement yet")
-    return True
+
+    data_validator(dict)
+
+    if database.deleteUserData(dict):
+        return True
+    else:
+        return False
 
 
 def run_server(host="localhost", port=8000):
