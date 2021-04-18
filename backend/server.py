@@ -44,8 +44,10 @@ class RequestHandler(SimpleXMLRPCRequestHandler):
                           self.log_date_time_string(),
                           format % args))
 
+
 class SimpleThreadedXMLRPCServer(ThreadingMixIn, SimpleXMLRPCServer):
     pass
+
 
 def serverSetUp():
     """
@@ -81,15 +83,14 @@ def getRecommMovieList(p_input_str):
     return str_list
 
 
-
-def mongo_instance(username,password):
+def mongo_instance(username, password):
     try:
         connection_url = 'mongodb+srv://manish:manish@cluster0.dfnnv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
-        client = pymongo.MongoClient(connection_url) 
+        client = pymongo.MongoClient(connection_url)
         db = client.get_database("Clients")
         queryObject = {'Name': username, 'Password': password}
         query = db.users.find_one(queryObject)
-        if(query):
+        if (query):
             print("***************************************************")
             print(username + " Successfully Loged In")
             print("***************************************************")
@@ -101,23 +102,23 @@ def mongo_instance(username,password):
         return False
     finally:
         return True
-    
-    
-def mongo_register(username,password,ID):
+
+
+def mongo_register(username, password, ID):
     try:
         connection_url = 'mongodb+srv://manish:manish@cluster0.dfnnv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
-        instance = pymongo.MongoClient(connection_url) 
+        instance = pymongo.MongoClient(connection_url)
         db = instance.Clients
         user = {
             "id": ID,
             "Name": username,
             "Password": password
-            }
-    
+        }
+
         db.users.insert_one(user)
         queryObject = {'Name': username, 'Password': password}
         query = db.users.find_one(queryObject)
-        if(query):
+        if (query):
             print("***************************************************")
             print(username + " Successfully Registered With Us")
             print("***************************************************")
@@ -146,6 +147,52 @@ def retrievingDetailsOfMovies(movie_title_list):
         print(movies_list)
     return movie_title_list
 
+
+def insertRequest(dict):
+    """
+    insert a new movie and its rating to database
+    :param dict: dataToinsert = {
+        "id": "12345",
+        "title": "Avneet",
+        "userId": "5",
+        "movieId": "12345",
+        "timestamp": "9999999"
+    }
+    :return:
+    """
+    print("RPC CALL: INSERT REQUEST")
+    print("not implement yet")
+    return True
+
+
+def updateRequest(dict):
+    """
+    update current movie data in database
+    :param dict: dataToinsert = {
+        "id": "12345",
+        "title": "Avneet",
+        "userId": "5",
+        "movieId": "12345",
+        "timestamp": "9999999"
+    }
+    :return:
+    """
+    print("RPC CALL: UPDATE REQUEST")
+    print("not implement yet")
+    return True
+
+
+def deleteRequest(movie_name_to_del):
+    """
+    delete the movie from the database
+    :param movie_name_to_del:
+    :return:
+    """
+    print("RPC CALL: DELETE REQUEST")
+    print("not implement yet")
+    return True
+
+
 def run_server(host="localhost", port=8000):
     serverSetUp()
     server_addr = (host, port)
@@ -155,11 +202,9 @@ def run_server(host="localhost", port=8000):
         my_server.register_function(getRecommMovieList, 'getrecommend')
         my_server.register_function(mongo_instance, 'atlas_instance')
         my_server.register_function(mongo_register, 'register')
-
-        # title_list = ['Toy Story', 'Jumanji', 'Grumpier Old Men', 'Father of the Bride Part II']
-        # title_list = getRecommMovieList('Toy Story')
-        # print(title_list)
-        # #retrievingDetailsOfMovies(title_list)
+        my_server.register_function(insertRequest, 'insert')
+        my_server.register_function(deleteRequest, 'delete')
+        my_server.register_function(updateRequest, 'update')
 
         try:
             print("*******************************************************")

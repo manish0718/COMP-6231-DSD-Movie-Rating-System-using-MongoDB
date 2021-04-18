@@ -109,6 +109,7 @@ def raw_process():
     dataframe.drop(['timestamp', 'id'], axis=1, inplace=True)
     # movieid and id are duplicated, keep only one
     BeautifulSoup = dataframe.drop_duplicates(['userId', 'title'])
+    BeautifulSoup.to_csv("beautifulSoup.csv", index = False, header=True)
 
 
 def apriori_preprocess():
@@ -121,13 +122,14 @@ def apriori_preprocess():
     print("*******************************************************")
     global BeautifulSoup
 
+    if path.exists("beautifulSoup.csv"):
+        l_df=pd.read_csv("beautifulSoup.csv")
+        return pivot(l_df)
+
     if BeautifulSoup is None:
         raw_process()
 
     return pivot(BeautifulSoup)
-
-    # write json to file
-    # json.dump(fromDataframeToJson(dataframe), open('../resource/dict.json', 'w', encoding='utf-8'), indent=4)
 
 
 def knn_preprocess():
@@ -140,6 +142,14 @@ def knn_preprocess():
     print("*******************************************************")
     global BeautifulSoup
 
+    if path.exists("beautifulSoup.csv"):
+        l_df=pd.read_csv("beautifulSoup.csv")
+        # Reshape the data using pivot function
+        df_for_knn = l_df.pivot(index='title', columns='userId', values='rating').fillna(0)
+        # use sparse matrix representation of this matrix
+        df_for_knn_sparse = csr_matrix(df_for_knn.values)
+        return df_for_knn_sparse, df_for_knn
+
     if BeautifulSoup is None:
         raw_process()
 
@@ -148,3 +158,6 @@ def knn_preprocess():
     # use sparse matrix representation of this matrix
     df_for_knn_sparse = csr_matrix(df_for_knn.values)
     return df_for_knn_sparse, df_for_knn
+
+if __name__ == '__main__':
+    raw_process()

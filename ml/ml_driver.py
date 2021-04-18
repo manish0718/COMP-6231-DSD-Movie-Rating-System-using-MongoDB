@@ -1,3 +1,5 @@
+import time
+
 from ml import modelling
 from ml import preprocessor
 
@@ -50,9 +52,15 @@ def ml_run(user_input_str):
     :param user_input_str:
     :return: list of recommendation movies for users
     """
+    start = time.time()
     apriori_res = modelling.interpret_results(modelling.apriori_tranning(preprocessor.apriori_preprocess()))
     apriori_recommendation_list = apriori_final_result_toString(apriori_res, user_input_str)
+    apriori_end = time.time() - start
+    print("apriori time taken: " + str(apriori_end))
+    start = time.time()
     knn_recommendation_list = knn_run(user_input_str)
+    knn_end = time.time() - start
+    print("knn time taken: " + str(knn_end))
     final_recommendation_list = apriori_recommendation_list + knn_recommendation_list
     final_recommendation_list = list(set(final_recommendation_list))
     print(final_recommendation_list)
@@ -62,3 +70,4 @@ def ml_run(user_input_str):
 # test only
 if __name__ == "__main__":
     print(ml_run("Young and Innocent"))
+    # print(knn_run("Batman Returns"))
