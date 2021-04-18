@@ -72,3 +72,23 @@ def update(file, collection):
     collections.insert_one(file_data)
 
     print("Data inserted on mongodb atlas")
+    
+    
+ def insertUserData(insertData):
+    # Connect to MongoDB
+    db = _connect_mongo("MovieRating")
+
+    movie_collection = db["movies_metadata"]
+    myMoviesData = { "id": insertData['id'], "title": insertData['title']}
+    insertedMovieID = movie_collection.insert_one(myMoviesData)
+
+    rating_collection = db["ratings_small"]
+    myRatingsData = {"userId": insertData['userId'], "movieId": insertData['movieId'], "timestamp": insertData['timestamp']}
+    insertedRatingId = rating_collection.insert_one(myRatingsData)
+
+    if insertedMovieID.acknowledged and insertedRatingId.acknowledged:
+        print("Data successfully inserted.")
+        return True
+
+    return False
+
