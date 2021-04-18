@@ -18,7 +18,7 @@ def fetch_db():
 
 @app.route("/")
 def login():
-    return render_template("Machine Learning.html")
+    return render_template("login.html")
 
 
 @app.route("/home")
