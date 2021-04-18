@@ -138,7 +138,7 @@ def deleteUserData(data):
     x = col1.delete_one({"title": title})
     y = col2.delete_one({"movieId": movieID})
 
-    if (y.acknowledged and x.acknowledged):
+    if (y.deleted_count > 0 and x.deleted_count >0):
         print("Data successfully deleted.")
         return True
 
