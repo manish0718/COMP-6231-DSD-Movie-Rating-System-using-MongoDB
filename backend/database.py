@@ -122,3 +122,25 @@ def updateUserData(updateData):
 
     return False
 
+def deleteUserData(data):
+    # Connect to MongoDB
+    db = _connect_mongo("MovieRating")
+
+    col1 = db["movies_metadata"]
+    col2 = db["ratings_small"]
+
+    # data for ratings
+    movieID = data["movieId"]
+
+    # data for moviedataset
+    title = data["title"]
+
+    x = col1.delete_one({"title": title})
+    y = col2.delete_one({"movieId": movieID})
+
+    if (y.acknowledged and x.acknowledged):
+        print("Data successfully deleted.")
+        return True
+
+    return False
+
