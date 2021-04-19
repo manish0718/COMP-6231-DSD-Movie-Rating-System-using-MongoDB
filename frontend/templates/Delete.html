@@ -28,7 +28,7 @@
  li {
  
     float: left;
-	width:20%;
+	width:16%;
   }
 
  li a {
@@ -36,7 +36,7 @@
     display: block;
     color: white;
     text-align: center;
-    padding: 14px 16px;
+    padding: 10px 10px;
     text-decoration: none;
 	font-size:130%;
   }
@@ -118,6 +118,15 @@
 	font-size:150%;
  }
  
+   .movieId{
+    position:relative ;
+	width: 70%; 
+	height: 17%; 
+	top:15%; 
+	left:20% ; 
+	font-size:150%;
+ }
+ 
  @media screen and (max-width: 870px){ 
  
    *{
@@ -191,7 +200,7 @@
     background-color: #00FF00 ; 
 	height:17% ; 
 	width:35% ; 
-	top:-5%; 
+	top:5%; 
 	left:37% ; 
 	border-radius:30px ;
 	font-size:80%   
@@ -207,7 +216,16 @@
     position:relative ;
 	width: 70%; 
 	height: 17%; 
-	top:-10%; 
+	top:-2%; 
+	left:20% ; 
+	font-size:80%;
+ }
+ 
+   .movieId{
+    position:relative ;
+	width: 70%; 
+	height: 17%; 
+	top:2%; 
 	left:20% ; 
 	font-size:80%;
  }
@@ -225,6 +243,7 @@
 <ul>
   <li><a class="active" href="{{url_for('home')}}">Home</a></li>
   <li><a href="{{url_for('ML')}}">Find Movies</a></li>
+  <li><a href="{{url_for('Search')}}">Search Movies</a></li>
   <li><a href="{{url_for('Insert')}}">Insert Movies</a></li>
   <li><a href="{{url_for('Update')}}">Update Movies</a></li>
   <li><a href="{{url_for('Delete')}}">Delete Movies</a></li>
@@ -241,9 +260,10 @@
 {% endwith %}
 </div>
 <br>
-<form action="{{url_for('fetch')}}" method="post">
+<form action="{{url_for('delete')}}" method="post" target="_blank">
 <div class="input-1">
 <input class="movie-name" name="MovieName" type="text"  method="POST" placeholder="Movie Name" >
+<input class="movieId" name="Movie ID" type="number"  method="POST" placeholder="Movie ID" >
 <input  class = "submit-name" value="DELETE" type="submit"></input>
 </div>
 </form>

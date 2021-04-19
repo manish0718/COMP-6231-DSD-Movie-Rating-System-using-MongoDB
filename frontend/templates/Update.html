@@ -28,7 +28,7 @@
  li {
  
     float: left;
-	width:20%;
+	width:16%;
   }
 
  li a {
@@ -36,7 +36,7 @@
     display: block;
     color: white;
     text-align: center;
-    padding: 14px 16px;
+    padding: 10px 10px;
     text-decoration: none;
 	font-size:130%;
   }
@@ -276,7 +276,7 @@
     height: 5%; 
     top:20%; 
     left:25% ; 
-    font-size:80%;
+    font-size:70%;
   }
  
   input[type=submit] {
@@ -292,6 +292,7 @@
 <ul>
   <li><a class="active" href="{{url_for('home')}}">Home</a></li>
   <li><a href="{{url_for('ML')}}">Find Movies</a></li>
+  <li><a href="{{url_for('Search')}}">Search Movies</a></li>
   <li><a href="{{url_for('Insert')}}">Insert Movies</a></li>
   <li><a href="{{url_for('Update')}}">Update Movies</a></li>
   <li><a href="{{url_for('Delete')}}">Delete Movies</a></li>
@@ -308,11 +309,11 @@
 {% endwith %}
 </div>
 <br>
-<form action="{{url_for('fetch')}}" method="post">
+<form action="{{url_for('update')}}" method="post" target="_blank">
 <div class="input-1">
 <input class="movie-name" name="MovieName" type="text" method="POST" placeholder="Movie Name" >
 <input class="ID" name="ID" type="number"  method="POST" placeholder="ID" >
-<input class="user" name="User ID" type="number" method="POST" placeholder="Uder ID" >
+<input class="user" name="User ID" type="number" method="POST" placeholder="User ID" >
 <input class="id" name="Movie ID" type="number" method="POST" placeholder="Movie ID" >
 <input class="time" name="Time Stamp" type="datetime-local" method="POST" placeholder="Time Stamp" >
 <input class = "submit-name" value="UPDATE" type="submit" ></input>
