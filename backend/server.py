@@ -59,7 +59,6 @@ def serverSetUp():
     global movie_rating_database
     global movie_metadata_collection
     movie_rating_database = database._connect_mongo()
-    # print(movie_rating_database.list_collection_names())
     movie_metadata_collection = movie_rating_database["movies_metadata"]
     print("my_server database setup ready..")
 
@@ -70,8 +69,21 @@ def searchHandler(p_input_movie):
     :param p_input_movie:
     :return: str
     """
+    print("***************************************************")
+    print("RPC CALL: SEARCH REQUEST")
+    print("***************************************************")
     print("Retrieving document for movie: " + p_input_movie)
-    return movie_metadata_collection.find({"title": p_input_movie})
+    if(database.searchMovie(p_input_movie)):
+        print("***************************************************")
+        print("Movie Is Present In The Database")
+        print("***************************************************")
+        return True
+    else:
+        print("***************************************************")
+        print("Movie Is Not Present In The Database")
+        print("***************************************************")
+        return False
+    
 
 
 def getRecommMovieList(p_input_str):
@@ -87,13 +99,13 @@ def getRecommMovieList(p_input_str):
 
 
 def mongo_instance(username, password):
+    Response = False
     try:
-        connection_url = 'mongodb+srv://manish:manish@cluster0.dfnnv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
-        client = pymongo.MongoClient(connection_url)
-        db = client.get_database("Clients")
-        queryObject = {'Name': username, 'Password': password}
-        query = db.users.find_one(queryObject)
-        if (query):
+        print("***************************************************")
+        print("RPC CALL: Verify The Credentials For Successful login")
+        print("***************************************************")
+        Response=database.mongoLogin(username,password)
+        if (Response):
             print("***************************************************")
             print(username + " Successfully Loged In")
             print("***************************************************")
@@ -101,33 +113,28 @@ def mongo_instance(username, password):
             print("***************************************************")
             print(username + " Incorrect Credentials")
             print("***************************************************")
-            return False
 
     except:
         print("***************************************************")
         print("Connection Failed With MongoDb Cloud")
         print("User Was not able to successfully log in")
         print("***************************************************")
-        return False
+
     finally:
-        return True
+        if(Response==True):
+            return True
+        else:
+            return False
 
 
 def mongo_register(username, password, ID):
+    Response = False
     try:
-        connection_url = 'mongodb+srv://manish:manish@cluster0.dfnnv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
-        instance = pymongo.MongoClient(connection_url)
-        db = instance.Clients
-        user = {
-            "id": ID,
-            "Name": username,
-            "Password": password
-        }
-
-        db.users.insert_one(user)
-        queryObject = {'Name': username, 'Password': password}
-        query = db.users.find_one(queryObject)
-        if (query):
+        print("***************************************************")
+        print("RPC CALL: Verify The Credentials For Registration and Register The New User")
+        print("***************************************************")
+        Response = database.registerWithMongo(username,password,ID)
+        if (Response):
             print("***************************************************")
             print(username + " Successfully Registered With Us")
             print("***************************************************")
@@ -135,16 +142,18 @@ def mongo_register(username, password, ID):
             print("***************************************************")
             print(username + " Unuccessfully Registration")
             print("***************************************************")
-            return False
 
     except:
         print("***************************************************")
         print("Connection Failed With MongoDb Cloud")
         print("User was not able to successfully register with us")
         print("***************************************************")
-        return False
+
     finally:
-        return True
+        if(Response==True):
+            return True
+        else:
+            return False
 
 
 def retrievingDetailsOfMovies(movie_title_list):
@@ -236,7 +245,7 @@ def deleteRequest(dict):
     """
     print("RPC CALL: DELETE REQUEST")
 
-    data_validator(dict)
+    #data_validator(dict)
 
     if database.deleteUserData(dict):
         return True

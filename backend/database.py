@@ -4,6 +4,7 @@ import pandas as pd
 from pymongo import MongoClient
 
 
+
 def _connect_mongo(db_name="MovieRating"):
     """ A util for making a connection to mongo """
 
@@ -153,24 +154,62 @@ def deleteUserData(data):
 
     return False
 
-def searchUserData(data):
-    # Connect to MongoDB
-    db = _connect_mongo("MovieRating")
 
-    col1 = db["movies_metadata"]
-    col2 = db["ratings_small"]
+def getMongoInstance():
+    try:
+        connection_url = 'mongodb+srv://Manjit:Manjit@cluster0.dfnnv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+        client = MongoClient(connection_url)  
+    except:
+        print("Connection Failed With MongoDb Cloud")
+    finally:
+        return client
+    
 
-    # data for ratings
-    movieID = data["movieId"]
+def registerWithMongo(username,password,ID):
+    instance = getMongoInstance()
+    db = instance.Clients
+    user = {
+        "id": ID,
+        "Name": username,
+        "Password": password
+    }
 
-    # data for moviedataset
-    title = data["title"]
+    db.users.insert_one(user)
+    queryObject = {'Name': username, 'Password': password}
+    query = db.users.find_one(queryObject)
+    
+    if(query):
+        return True
+    else:
+        return False
+    
+    
+def mongoLogin(username,password):
+    client = getMongoInstance()
+    db = client.get_database("Clients")
+    queryObject = {'Name': username, 'Password': password}
+    query = db.users.find_one(queryObject)
+    if(query):
+        return True
+    else:
+        return False
+    
+    
+def searchMovie(p_input_movie):
+    client = getMongoInstance()
+    db = client.get_database("MovieRating")
+    queryObject = {"title":p_input_movie}
+    query = db.movies_metadata.find_one(queryObject)
+    if(query):
+        return True
+    else:
+        return False
+    
+    
+    
 
-    for x in col1.find({"title": title}, {"_id": 0, "title": 1, "id": 1}):
-        print("Printing Movie details.")
-        print(x)
 
-    for y in col2.find({"movieID": movieID}, {"_id": 0, "movieID": 1, "userId": 1, "timestamp": 1}):
-        print("Printing rating details.")
-        print(y)
 
+
+
+    
