@@ -82,18 +82,6 @@ def raw_process():
 
     movies_data = get_data("movies_metadata")
     rating_data = get_data("ratings_small")
-    #movies_data = data_loading_fromcsv("../resource/movies_metadata.csv")
-    #rating_data = data_loading_fromcsv("../resource/ratings_small.csv")
-
-    plt.figure(figsize=(10, 5))
-    ax = sns.countplot(data=rating_data, x='rating')
-    labels = (rating_data['rating'].value_counts().sort_index())
-    plt.title('Distribution of Ratings')
-    plt.xlabel('Ratings')
-
-    for i, v in enumerate(labels):
-        ax.text(i, v + 100, str(v), horizontalalignment='center', size=14, color='black')
-    plt.show()
 
     # clean data that wont help
     print("removing useless data")
@@ -122,9 +110,9 @@ def apriori_preprocess():
     print("*******************************************************")
     global BeautifulSoup
 
-    if path.exists("beautifulSoup.csv"):
-        l_df=pd.read_csv("beautifulSoup.csv")
-        return pivot(l_df)
+    # if path.exists("beautifulSoup.csv"):
+    #     l_df=pd.read_csv("beautifulSoup.csv")
+    #     return pivot(l_df)
 
     if BeautifulSoup is None:
         raw_process()
@@ -142,13 +130,13 @@ def knn_preprocess():
     print("*******************************************************")
     global BeautifulSoup
 
-    if path.exists("beautifulSoup.csv"):
-        l_df=pd.read_csv("beautifulSoup.csv")
-        # Reshape the data using pivot function
-        df_for_knn = l_df.pivot(index='title', columns='userId', values='rating').fillna(0)
-        # use sparse matrix representation of this matrix
-        df_for_knn_sparse = csr_matrix(df_for_knn.values)
-        return df_for_knn_sparse, df_for_knn
+    # if path.exists("beautifulSoup.csv"):
+    #     l_df=pd.read_csv("beautifulSoup.csv")
+    #     # Reshape the data using pivot function
+    #     df_for_knn = l_df.pivot(index='title', columns='userId', values='rating').fillna(0)
+    #     # use sparse matrix representation of this matrix
+    #     df_for_knn_sparse = csr_matrix(df_for_knn.values)
+    #     return df_for_knn_sparse, df_for_knn
 
     if BeautifulSoup is None:
         raw_process()
