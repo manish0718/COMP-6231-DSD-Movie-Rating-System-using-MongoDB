@@ -2,6 +2,7 @@ import json
 
 import pandas as pd
 from pymongo import MongoClient
+from ml import preprocessor
 
 
 
@@ -37,9 +38,10 @@ def _connect_mongo(db_name="MovieRating"):
 
 def get_collection(collection, no_id=True):
     """ Read from Mongo and Store into DataFrame """
-    db_name = 'MovieRating'
+    #db_name = 'MovieRating'
     # Connect to MongoDB
-    db = _connect_mongo(db_name)
+    client = getMongoInstance()
+    db = client.get_database("MovieRating")
 
     # Make a query to the specific DB and Collection
     cursor = db[collection]
@@ -75,21 +77,23 @@ def update(file, collection):
     
 def insertUserData(insertData):
     # Connect to MongoDB
-    db = _connect_mongo("MovieRating")
+    client = getMongoInstance()
+    db = client.get_database("MovieRating")
 
     movie_collection = db["movies_metadata"]
-    myMoviesData = {"id": insertData['id'], "title": insertData['title'], "adult": "False",
-                    "belongs_to_collection": "NaN", "budget": " ", "genres": " ", "homepage": "NaN", "imdb_id": " ",
-                    "original_language": " ", "original_title": " ", "overview": " ", "popularity": "",
-                    "poster_path": " ", "production_companies": " ", "production_countries": " ", "release_date": " ",
-                    "revenue": " ", "runtime": " ", "spoken_languages": " ", "status": " ", "tagline": " ",
-                    "video": "false", "vote_average": " ", "vote_count": " "}
+    myMoviesData = {"adult": "False","belongs_to_collection": float("NaN"),
+                     "budget": float("NaN"), "genres": float("NaN"), "homepage": float("NaN"),"id": str(insertData['id']), "imdb_id": float("NaN"),
+                    "original_language": float("NaN"), "original_title": float("NaN"), "overview": float("NaN"), "popularity": float("NaN"),
+                    "poster_path": float("NaN"), "production_companies": float("NaN"), "production_countries": float("NaN"), "release_date": float("NaN"),
+                    "revenue": float("NaN"), "runtime": float("NaN"), "spoken_languages": float("NaN"), "status": float("NaN"), "tagline": float("NaN"),"title": insertData['title'],
+                    "video": "false", "vote_average": float("NaN"), "vote_count": float("NaN")}
     insertedMovieID = movie_collection.insert_one(myMoviesData)
 
     rating_collection = db["ratings_small"]
     myRatingsData = {"userId": insertData['userId'], "movieId": insertData['movieId'],
-                     "timestamp": insertData['timestamp'], "rating": " "}
+                     "timestamp": insertData['timestamp'], "rating": 4.5}
     insertedRatingId = rating_collection.insert_one(myRatingsData)
+    
 
     if insertedMovieID.acknowledged and insertedRatingId.acknowledged:
         print("Data successfully inserted.")
@@ -99,29 +103,30 @@ def insertUserData(insertData):
 
 def updateUserData(updateData):
     # Connect to MongoDB
-    db = _connect_mongo("MovieRating")
+    client = getMongoInstance()
+    db = client.get_database("MovieRating")
 
     col1 = db["movies_metadata"]
     col2 = db["ratings_small"]
 
     # data for ratings
-    movieID = updateData["movieId"]
-    userId = updateData["userId"]
-    timestamp = updateData["timestamp"]
+    movieID = int(updateData["movieId"])
+    userId = int(updateData["userId"])
+    timestamp = int(updateData["timestamp"])
 
     # date for moviedataset
     title = updateData["title"]
-    id = updateData["id"]
+    id = str(updateData["id"])
 
     filter1 = { 'title': title }
-    newMovieValues = {"$set": {"title": title, "id": id, "adult": "False",
-                               "belongs_to_collection": "NaN", "budget": " ", "genres": " ", "homepage": "NaN", "imdb_id": " ",
-                               "original_language": " ", "original_title": " ", "overview": " ", "popularity": "",
-                               "poster_path": " ", "production_companies": " ", "production_countries": " ", "release_date": " ",
-                               "revenue": " ", "runtime": " ", "spoken_languages": " ", "status": " ", "tagline": " ",
-                               "video": "false", "vote_average": " ", "vote_count": " "}}
+    newMovieValues = {"$set": {"adult": "False","belongs_to_collection": float("NaN"),
+                     "budget": float("NaN"), "genres": float("NaN"), "homepage": float("NaN"),"id": id, "imdb_id": float("NaN"),
+                    "original_language": float("NaN"), "original_title": float("NaN"), "overview": float("NaN"), "popularity": float("NaN"),
+                    "poster_path": float("NaN"), "production_companies": float("NaN"), "production_countries": float("NaN"), "release_date": float("NaN"),
+                    "revenue": float("NaN"), "runtime": float("NaN"), "spoken_languages": float("NaN"), "status": float("NaN"), "tagline": float("NaN"),"title": title,
+                    "video": "false", "vote_average": float("NaN"), "vote_count": float("NaN")}}
     filter2 = { 'userId': userId }
-    newRatingValues = {"$set": {"movieID": movieID, "userId": userId, "timestamp": timestamp, "rating": " "}}
+    newRatingValues = {"$set": {"movieId": movieID, "userId": userId, "timestamp": timestamp, "rating": 4.5}}
 
     x = col1.update_one(filter1, newMovieValues, upsert=True)
     y = col2.update_one(filter2, newRatingValues, upsert=True)
@@ -133,8 +138,8 @@ def updateUserData(updateData):
     return False
 
 def deleteUserData(data):
-    # Connect to MongoDB
-    db = _connect_mongo("MovieRating")
+    client = getMongoInstance()
+    db = client.get_database("MovieRating")
 
     col1 = db["movies_metadata"]
     col2 = db["ratings_small"]
@@ -142,13 +147,20 @@ def deleteUserData(data):
     # data for ratings
     movieID = data["movieId"]
 
+
     # data for moviedataset
     title = data["title"]
 
-    x = col1.delete_one({"title": title})
-    y = col2.delete_one({"movieId": movieID})
+    q1 = {"title": title}
+    q2 = {"movieId": movieID}
 
-    if (y.deleted_count > 0 and x.deleted_count >0):
+
+    x = col1.delete_one(q1)
+
+    y = col2.delete_one(q2)
+    
+
+    if (y.deleted_count > 0 and x.deleted_count > 0):
         print("Data successfully deleted.")
         return True
 
@@ -157,7 +169,7 @@ def deleteUserData(data):
 
 def getMongoInstance():
     try:
-        connection_url = 'mongodb+srv://Manjit:Manjit@cluster0.dfnnv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+        connection_url = 'mongodb+srv://manish:manish@cluster0.dfnnv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
         client = MongoClient(connection_url)  
     except:
         print("Connection Failed With MongoDb Cloud")
