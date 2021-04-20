@@ -250,15 +250,6 @@
 </ul>
 <h5 style = "text-align: center ; font-size:185% ;color:#FFFFFF";>DELETE THE MOVIE</h5>
 <br>
-<div class="msg">
-{% with messages = get_flashed_messages() %}  
-         {% if messages %}  
-               {% for message in messages %}  
-                    <p><b>{{ message }}</b></p>  
-               {% endfor %}  
-         {% endif %}  
-{% endwith %}
-</div>
 <br>
 <form action="{{url_for('delete')}}" method="post" target="_blank">
 <div class="input-1">

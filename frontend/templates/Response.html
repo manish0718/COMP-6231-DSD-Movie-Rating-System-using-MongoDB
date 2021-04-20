@@ -112,16 +112,6 @@
   <li><a href="{{url_for('Update')}}">Update Movies</a></li>
   <li><a href="{{url_for('Delete')}}">Delete Movies</a></li>
 </ul>
-<div class="container">
-  <h2>Spinner Buttons</h2>
-  <p>Add spinners to buttons:</p>
-                                        
-  <button class="btn btn-primary">
-    <span class="spinner-border spinner-border-sm"></span>
-    Loading..
-  </button>
-  
-</div>
 <div class="msg">
 {% with messages = get_flashed_messages() %}  
          {% if messages %}  
