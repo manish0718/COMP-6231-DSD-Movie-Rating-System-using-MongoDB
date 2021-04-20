@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, flash , jsonify
+from flask import Flask, request, render_template, flash 
 import client
 from datetime import datetime,timezone
 
@@ -20,7 +20,7 @@ db,db1 = fetch_db()
 
 @app.route("/")
 def login():
-    return render_template("login.html")
+    return render_template("Machine Learning.html")
 
 
 @app.route("/home")
@@ -249,10 +249,10 @@ def insert():
                 date_time_obj = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
                 timestamp = date_time_obj.replace(tzinfo=timezone.utc).timestamp()
                 dataToInsert = {
-                            "id": ID,
-                            "title": name,
-                            "userId": user_id,
-                            "movieId": movie_id,
+                            "id": str(ID),
+                            "title": str(name),
+                            "userId": int(user_id),
+                            "movieId": int(ID),
                             "timestamp": int(timestamp)                                   
                     }
                 print("***************************************************************")
@@ -309,10 +309,10 @@ def update():
                 date_time_obj = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
                 timestamp = date_time_obj.replace(tzinfo=timezone.utc).timestamp()
                 dataToUpdate = {
-                            "id": ID,
-                            "title": name,
-                            "userId": user_id,
-                            "movieId": movie_id,
+                            "id": str(ID),
+                            "title": str(name),
+                            "userId": int(user_id),
+                            "movieId": int(ID),
                             "timestamp": int(timestamp)                                    
                     }
                 print("***************************************************************")
@@ -326,6 +326,7 @@ def update():
                         print("*******************************************************")
                         print("Movie Information Got Successfully Updated")
                         print("*******************************************************")
+                        msg='Movie Information Got Successfully Updated'
                     else:
                         print("***************************************************************")
                         print("Movie Information Updation Was Unsuccessful On Server Side, Please Try Again")
@@ -343,7 +344,7 @@ def update():
                 msg="Something Went Wrong...... Please Try Again"
 
             finally:
-                if(Response==True):
+                if(msg=='Movie Information Got Successfully Updated'):
                     flash("Movie Information Got Successfully Updated")
                     return render_template("Response.html")
                 else:
@@ -379,12 +380,13 @@ def delete():
         if(name):           
             try:
                 dataToDelete = {
-                    "title": name,
-                    "movieId": movieId,                                   
+                    "title": str(name),
+                    "movieId": int(movieId),                                   
                 }
                 print("***************************************************************")
                 print("Deleting The Movie File from the database .........")
                 print("Movie whose data is to be deleted is : " + name)
+                print(dataToDelete)
                 print("***************************************************************")
                 Response = ClientStub.searchmovie(name)
                 if(Response==True):
