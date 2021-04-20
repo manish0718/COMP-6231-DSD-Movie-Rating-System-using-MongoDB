@@ -165,18 +165,15 @@ def fetch():
                             query.pop('_id')
                             json_movie[movie] = query
 
-                        print(json_movie)
 
                         for j in range(0, 10):
                             if not json_movie[j]:
                                 json_movie[j] = "No Details"
 
                         diff = len(json_movie) - len(Movie)
-                        print(json_movie)
 
                         for i in range(len(Movie), diff + len(Movie)):
                             Movie.append("No Movie Reccommended")
-                        print(Movie)
 
                         return json_movie
                     else:
