@@ -122,6 +122,7 @@ def authentication():
             return render_template("login.html")
 
 
+
 @app.route("/Movie_Name", methods=['GET', 'POST'])
 def fetch():
     if request.method == "POST":
@@ -129,62 +130,86 @@ def fetch():
         Response = False
         if name:
             l_count = 0;
-            while(l_count<5):
-                print("*******************************************************")
-                print("Trying to connect to the Server.........."+ "(" +str(l_count) + ")")
-                print("*******************************************************")
+            while (l_count < 5):
+                print("*******************")
+                print("Trying to connect to the Server.........." + "(" + str(l_count) + ")")
+                print("*******************")
                 try:
-                    l_count+=1  
-                    print("*******************************************************")
+                    l_count += 1
+                    print("*******************")
                     print("CLIENT STUB..")
                     print(ClientStub)
-                    print("*******************************************************")
+                    print("*******************")
                     Response = ClientStub.searchmovie(name)
-                    if(Response==True):
+                    if (Response == True):
                         Movie = ClientStub.getrecommend(name)
-                        print("*******************************************************")
+                        print("*******************")
                         print("Movies from the server are:")
                         print(Movie)
-                        print("*******************************************************")
-                        json_movie = []
-                        print("*******************************************************")
+                        print("*******************")
+                        json_movie = [0] * 10
+                        print(json_movie)
+                        print("*******************")
                         print("Fetching")
-                        print("*******************************************************")
-        
-                        for movie in Movie:
-                            queryObject = {"title": movie}
+                        print("*******************")
+
+                        # for movie in Movie:
+                        #     queryObject = {"title": movie}
+                        #     query = db1.movies_metadata.find_one(queryObject)
+                        #     query.pop('_id')
+                        #     json_movie.append(query)
+
+                        for movie in range(len(Movie)):
+                            queryObject = {"title": Movie[movie]}
                             query = db1.movies_metadata.find_one(queryObject)
                             query.pop('_id')
-                            json_movie.append(query)
-        
+                            json_movie[movie] = query
+
+                        print(json_movie)
+
+                        for j in range(0, 10):
+                            if not json_movie[j]:
+                                json_movie[j] = "No Details"
+
+                        diff = len(json_movie) - len(Movie)
+                        print(json_movie)
+
+                        for i in range(len(Movie), diff + len(Movie)):
+                            Movie.append("No Movie Reccommended")
+                        print(Movie)
+
                         return json_movie
                     else:
-                        print("*******************************************************")
+                        print("*******************")
                         print("Movie Doesnot Exists In The Database")
-                        print("*******************************************************")                        
+                        print("*******************")
                 except:
-                    print("*******************************************************")
+                    print("*******************")
                     print("Something Went Wrong")
-                    print("*******************************************************")
+                    print("*******************")
                 finally:
-                    if(Response==True):
-                        return render_template("Result.html", data=json_movie[0],data1=json_movie[1],data2=json_movie[2],data3=json_movie[3],\
-                                               data4=json_movie[4],data5=json_movie[5],data6=json_movie[6],data7=json_movie[7],\
-                                               data8=json_movie[8],data9=json_movie[9],\
-                                               MOVIE1 =Movie[0],MOVIE2 =Movie[1],MOVIE3 =Movie[2],MOVIE4 =Movie[3],MOVIE5 =Movie[4],\
-                                               MOVIE6 =Movie[5],MOVIE7 =Movie[6],MOVIE8 =Movie[7],MOVIE9 =Movie[8],MOVIE10 =Movie[9])
+                    if (Response == True):
+                        return render_template("Result.html", data=json_movie[0], data1=json_movie[1],
+                                               data2=json_movie[2], data3=json_movie[3], \
+                                               data4=json_movie[4], data5=json_movie[5], data6=json_movie[6],
+                                               data7=json_movie[7], \
+                                               data8=json_movie[8], data9=json_movie[9], \
+                                               MOVIE1=Movie[0], MOVIE2=Movie[1], MOVIE3=Movie[2], MOVIE4=Movie[3],
+                                               MOVIE5=Movie[4], \
+                                               MOVIE6=Movie[5], MOVIE7=Movie[6], MOVIE8=Movie[7], MOVIE9=Movie[8],
+                                               MOVIE10=Movie[9])
                     else:
-                        print("*******************************************************")
+                        print("*******************")
                         print("Movie Doesnot Exists In The Database")
-                        print("*******************************************************")
+                        print("*******************")
                         flash("Movie Doesnot Exists That You Entered In The Search Bar")
                         return render_template("Response.html")
-                        
-                        
+
+
         else:
-            print("*******************************************************")
+            print("*******************")
             print("Movie Name Not Entered By User")
-            print("*******************************************************")
+            print("*******************")
             flash("Please Enter The Movie Name")
             return render_template("Machine Learning.html")
 

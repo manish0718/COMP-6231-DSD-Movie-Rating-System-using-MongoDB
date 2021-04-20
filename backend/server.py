@@ -245,15 +245,13 @@ def deleteRequest(dict):
     """
     print("RPC CALL: DELETE REQUEST")
 
-    #data_validator(dict)
-
     if database.deleteUserData(dict):
         return True
     else:
         return False
 
 
-def run_server(host="localhost", port=8000):
+def run_server(host="192.168.0.194", port=8000):
     serverSetUp()
     server_addr = (host, port)
     with SimpleThreadedXMLRPCServer((server_addr), logRequests=True, allow_none=True) as my_server:
@@ -280,3 +278,5 @@ def run_server(host="localhost", port=8000):
 
 if __name__ == "__main__":
     run_server()
+
+

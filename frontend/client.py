@@ -15,7 +15,7 @@ def connect_with_mongoDb():
 
 def conncet_with_server():
     try:
-        proxy = xmlrpc.client.ServerProxy("http://localhost:8000")
+        proxy = xmlrpc.client.ServerProxy("http://192.168.0.194:8000")
     except xmlrpc.client.Fault as err:
         print("A fault occurred")
         print("Fault code: %d" % err.faultCode)
